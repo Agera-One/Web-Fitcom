@@ -1,17 +1,10 @@
 <!-- http://localhost:81/smart_farm/index.php -->
 
 <?php
-// $input = "100.000,00";
-// $clean = str_replace('.', '', $input); // "100000,00"
-// $clean = str_replace(',', '.', $clean); // "100000.00"
-// $angka = floatval($clean); // 100000.00
-
 include 'connection.php';
 $query = "SELECT * FROM produk";
 $sql = mysqli_query($connection, $query);
 $nomer = 0;
-// $price =  $result['price'];
-// $formatted = number_format($price, 2, ',', '.');
 ?>
 
 <!DOCTYPE html>
@@ -45,42 +38,41 @@ $nomer = 0;
     <div class="modal fade" id="addProductModal" tabindex="-1">
       <div class="modal-dialog modal-dialog-cente=red modal-dialog-scrollable">
         <div class="modal-content">
+          <div class="modal-header bg-success" data-bs-theme="dark">
+            <h5 class="modal-title text-white">Add New Products</h5>
+            <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
           <form method="POST" action="process.php" enctype="multipart/form-data">
-            <div class="modal-header bg-success" data-bs-theme="dark">
-              <h5 class="modal-title text-white">Add New Products</h5>
-              <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
             <div class="modal-body">
-              <form method="POST">
-                <div class="mb-3">
-                  <label for="code" class="form-label">Product code</label>
-                  <input type="text" class="form-control" id="code" name="code" placeholder="Enter product code : max 5 char" required>
-                </div>
-                <div class="mb-3">
-                  <label for="name" class="form-label">Product Name</label>
-                  <input type="text" class="form-control" id="name" name="name" placeholder="Enter product name : max 225 char" required>
-                </div>
-                <div class="mb-3">
-                  <label for="unit" class="form-label">Unit</label>
-                  <select class="form-select" aria-label="Default select example" name="unit" id="unit" required>
-                    <option value="pcs">pcs</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                  <label for="price" class="form-label">Price</label>
-                  <input type="" class="form-control" id="price" name="price" placeholder="Enter product price : max 12 char" required>
-                </div>
-                <div class="mb-3">
-                  <label for="image" class="form-label">Product Image</label>
-                  <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
-                </div>
-                <input type="hidden" name="action" value="add">
+              <input type="hidden" name="action" value="add">
+              <div class="mb-3">
+                <label for="code" class="form-label">Product code</label>
+                <input type="text" class="form-control" id="code" name="code" placeholder="Enter product code : max 5 char" required>
+              </div>
+              <div class="mb-3">
+                <label for="name" class="form-label">Product Name</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Enter product name : max 225 char" required>
+              </div>
+              <div class="mb-3">
+                <label for="unit" class="form-label">Unit</label>
+                <select class="form-select" aria-label="Default select example" name="unit" id="unit" required>
+                  <option value="pcs">pcs</option>
+                  <option value="set">set</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="price" class="form-label">Price</label>
+                <input type="" class="form-control" id="price" name="price" placeholder="Enter product price : max 12 char" required>
+              </div>
+              <div class="mb-3">
+                <label for="image" class="form-label">Product Image</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+              </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
               <button type="submit" class="btn btn-success">Add</button>
             </div>
-          </form>
           </form>
         </div>
       </div>
@@ -90,10 +82,10 @@ $nomer = 0;
   <!-- TABLE -->
   <div class="container p-0 pb-3 shadow rounded-4 mb-5">
     <div class="header bg-success text-white px-3 py-4 rounded-top-4">
-      <h5>
+      <h4>
         <i class="bi bi-list-check me-2"></i>
         Current Stock Products
-      </h5>
+      </h4>
     </div>
     <div class="mx-4 body mt-3">
       <table class="table table-responsive align-middle table-striped">
@@ -112,7 +104,7 @@ $nomer = 0;
           <?php while ($result = mysqli_fetch_assoc($sql)) : ?>
             <tr>
               <td>
-                <a href="process.php?change=<?= $result['no'] ?>" type="button" class="btn btn-success">
+                <a href="change.php?change=<?= $result['no'] ?>" type="button" class="btn btn-success">
                   <i class="bi bi-pencil-fill"></i>
                 </a>
                 <a href="process.php?remove=<?= $result['no'] ?>" type="button" class="btn btn-danger" onclick="return confirm('Are you sure want to delete this item?')">
@@ -121,7 +113,7 @@ $nomer = 0;
               </td>
               <td><?= ++$nomer ?>.</td>
               <td>
-                <img src="Assets/Images/<?= htmlspecialchars($result['gambar']) ?>" alt="Product Image" style="max-width:100px;">
+                <img src="Assets/Images/<?= htmlspecialchars($result['gambar']) ?>" alt="Product Image" style="max-width:150px;">
               </td>
               <td><?= $result['kode'] ?></td>
               <td><?= $result['nama'] ?></td>
@@ -131,51 +123,6 @@ $nomer = 0;
           <?php endwhile; ?>
         </tbody>
       </table>
-    </div>
-  </div>
-
-  <!-- MODAL EDIT -->
-  <div class="modal fade" id="editProductModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-cente=red modal-dialog-scrollable">
-      <div class="modal-content">
-        <form method="POST" action="process.php" enctype="multipart/form-data">
-          <div class="modal-header bg-success" data-bs-theme="dark">
-            <h5 class="modal-title text-white">Add New Products</h5>
-            <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form method="POST">
-              <div class="mb-3">
-                <label for="code" class="form-label">Product code</label>
-                <input type="text" class="form-control" id="code" name="code" placeholder="Enter product code : max 5 char" required>
-              </div>
-              <div class="mb-3">
-                <label for="name" class="form-label">Product Name</label>
-                <input type="text" class="form-control" id="name" name="name" placeholder="Enter product name : max 225 char" required>
-              </div>
-              <div class="mb-3">
-                <label for="unit" class="form-label">Unit</label>
-                <select class="form-select" aria-label="Default select example" name="unit" id="unit" required>
-                  <option value="pcs">pcs</option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label for="price" class="form-label">Price</label>
-                <input type="" class="form-control" id="price" name="price" placeholder="Enter product price : max 12 char" required>
-              </div>
-              <div class="mb-3">
-                <label for="image" class="form-label">Product Image</label>
-                <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
-              </div>
-              <input type="hidden" name="action" value="add">
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-success">Add</button>
-          </div>
-        </form>
-        </form>
-      </div>
     </div>
   </div>
 </body>
